@@ -1,0 +1,25 @@
+{% extends "plan/base.html" %}
+
+{% block content %}
+<h2>{{ calendar }} {{ year }}</h2>
+<table border="1">
+    <tr>
+        {% for day in month_days %}
+            {% if forloop.counter0|divisibleby:7 %}
+                </tr><tr>
+            {% endif %}
+            <td>
+                {% if day != 0 %}
+                    <a href="{% url 'event_create' %}?date={{ year }}-{{ month }}-{{ day }}">
+                        {{ day }}
+                    </a>
+                    {% if day in event_dict %}
+                        <br><a href="{% url 'event_detail' event_dict.day.id %}">{{ event_dict.day.title }}</a>
+                    {% endif %}
+                {% endif %}
+            </td>
+        {% endfor %}
+    </tr>
+</table>
+<a href="{% url 'event_create' %}">일정 추가</a>
+{% endblock %}

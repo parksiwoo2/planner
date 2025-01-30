@@ -14,7 +14,8 @@
                         {{ day }}
                     </a>
                     {% if day in event_dict %}
-                        <br><a href="{% url 'event_detail' event_dict.day.id %}">{{ event_dict.day.title }}</a>
+                        <a href="{% url 'event_detail' event_dict[day].id %}"></a>
+                        {{ event_dict.day.title }}
                     {% endif %}
                 {% endif %}
             </td>

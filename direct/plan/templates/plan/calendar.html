@@ -2,25 +2,46 @@
 
 {% block content %}
 <h2>{{ calendar }} {{ year }}</h2>
-<table border="1">
+<table border="10" style="table-layout: fixed; width: 500px; height:400px">
     <tr>
-        {% for day in month_days %}
-            {% if forloop.counter0|divisibleby:7 %}
-                </tr><tr>
+      {% for day in month_days %}
+        {% if forloop.counter0|divisibleby:7 %}
+          </tr><tr>
+        {% endif %}
+        <td onclick="openModal('{{ day }}')" style="text-align: left; vertical-align: top;">
+          {% if day != 0 %}
+            {{ day }}
+            {% if day in event_dict %}
+              <a href="#">  {{ event_dict.day.title|default:"tlqkf" }}
+              </a>
             {% endif %}
-            <td>
-                {% if day != 0 %}
-                    <a href="{% url 'event_create' %}?date={{ year }}-{{ month }}-{{ day }}">
-                        {{ day }}
-                    </a>
-                    {% if day in event_dict %}
-                        <a href="{% url 'event_detail' event_id=(event_dict.get(day)).id %}"></a>
-                        {{ event_dict.day.title }}
-                    {% endif %}
-                {% endif %}
-            </td>
-        {% endfor %}
+          {% endif %}
+        </td>
+      {% endfor %}
     </tr>
 </table>
+  
+<div id="myModal" class="modal">
+<div class="modal-content">
+    <span class="close" onclick="closeModal()">&times;</span>
+    <p id="modal-day"></p>
+    <p id="modal-title"></p>
+    <a id="modal-link" href="">event_dict</a>
+</div>
+</div>
+  
+<script>
+function openModal(day, title, link) {
+    document.getElementById("modal-day").innerHTML = "날짜: " + day;
+    document.getElementById("modal-title").innerHTML = "제목: " + title;
+    document.getElementById("modal-link").href = link;
+    document.getElementById("myModal").style.display = "block";
+}
+
+function closeModal() {
+    document.getElementById("myModal").style.display = "none";
+}
+</script>
+  
 <a href="{% url 'event_create' %}">일정 추가</a>
 {% endblock %}

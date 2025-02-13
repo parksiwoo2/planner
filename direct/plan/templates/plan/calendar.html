@@ -12,7 +12,7 @@
           {% if day != 0 %}
             {{ day }}
             {% if day in event_dict %}
-              <a href="#">  {{ event_dict.day.title|default:"tlqkf" }}
+            <a href="{% url 'event_detail' event_dict.day.id|default:3 %}">  {{ event_dict.day.title|default:"tlqkf" }}
               </a>
             {% endif %}
           {% endif %}
@@ -20,13 +20,26 @@
       {% endfor %}
     </tr>
 </table>
-  
+<style>
+  #timer {
+    font-size: 2em;
+    margin-bottom: 10px;
+  }
+</style>
+<div>
+
+<div id="timer">00:00:00</div>
+<button id="startBtn">Start</button>
+<button id="stopBtn">Stop</button>
+<script src="script.js"></script>
+
+</div>
 <div id="myModal" class="modal">
 <div class="modal-content">
     <span class="close" onclick="closeModal()">&times;</span>
     <p id="modal-day"></p>
     <p id="modal-title"></p>
-    <a id="modal-link" href="">event_dict</a>
+    <a id="modal-link" href="https://github.com">event_dict</a>
 </div>
 </div>
   

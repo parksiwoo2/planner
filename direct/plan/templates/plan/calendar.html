@@ -73,6 +73,7 @@
   </script>
 
 </div>
+
 <div id="myModal" class="modal">
 <div class="modal-content">
     <span class="close" onclick="closeModal()">&times;</span>
@@ -83,6 +84,47 @@
 </div>
 </div>
 
+
+<style>
+  #myModal .modal {
+    display: none; /* 초기에는 숨김 */
+    position: fixed; /* 화면 전체에 고정 */
+    z-index: 1; /* 다른 요소 위에 표시 */
+    left: 75%;
+    top: 0%;
+    width: 25%;
+    height: 55%;
+    overflow: auto; /* 내용이 넘치면 스크롤 표시 */
+    background-color: rgba(224, 15, 15, 0.4); /* 배경색 */
+  }
+
+  #myModal .modal-content {
+    background-color: #6f0fee00;
+    margin: 15% auto; /* 가운데 정렬 */
+    padding: 20px;
+    border: 5px solid #888;
+    width: 80%; /* 내용에 따라 너비 조절 */
+    /* 추가 */
+    position: relative; /* 모달 내용 위치 조절을 위해 추가 */
+    top: 0%; /* 수직 가운데 정렬 */
+    left: 75%; /* 수평 가운데 정렬 */
+    transform: translate(-50%, -50%); /* 정확한 가운데 정렬 */
+  }
+
+  #myModal .close {
+    color: #000000;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+  }
+
+  #myModal .close:hover,
+  #myModal .close:focus {
+    color: rgb(19, 211, 92);
+    text-decoration: none;
+    cursor: pointer;
+  }
+</style>
 <script>
 function openModal(day, title, time, link) {
     document.getElementById("modal-day").innerHTML = "날짜: " + day;

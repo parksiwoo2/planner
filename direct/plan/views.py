@@ -14,8 +14,6 @@ def calendar_view(request, year=None, month=None):
     events = Event.objects.filter(date__year=year, date__month=month)
 
     event_dict = {event.date.day: event for event in events}
-    print(event_dict)
-    print(type(month_days))
     return render(request, "plan/calendar.html", {
         "year": year,
         "month": month,

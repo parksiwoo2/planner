@@ -28,10 +28,49 @@
 </style>
 <div>
 
-<div id="timer">00:00:00</div>
-<button id="startBtn">Start</button>
-<button id="stopBtn">Stop</button>
-<script src="script.js"></script>
+  <div id="timer">00:00:00</div>
+  <button id="startBtn">Start</button>
+  <!-- <button id="stopBtn">Stop</button> -->
+  <script>
+      const timer = document.getElementById('timer');
+      const startBtn = document.getElementById('startBtn');
+      const stopBtn = document.getElementById('stopBtn');
+
+      let startTime = null;
+      let elapsedTime = 0;
+      let timerInterval = null;
+
+      function updateTimer() {
+        const currentTime = Date.now();
+        elapsedTime = currentTime - startTime;
+
+        const seconds = Math.floor((elapsedTime / 1000) % 60);
+        const minutes = Math.floor((elapsedTime / (1000 * 60)) % 60);
+        const hours = Math.floor((elapsedTime / (1000 * 60 * 60)) % 24);
+
+        timer.textContent = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+      }
+
+      startBtn.addEventListener('click', () => {
+        if (timerInterval)
+          {
+            clearInterval(timerInterval);
+            timerInterval = null;
+            startBtn.textContent = 'Start';
+            return;
+          } // 이미 실행 중인 경우 무시
+
+        startTime = Date.now() - elapsedTime;
+        timerInterval = setInterval(updateTimer, 1000);
+        startBtn.textContent = 'Pause';
+      });
+
+      stopBtn.addEventListener('click', () => {
+        clearInterval(timerInterval);
+        timerInterval = null;
+        startBtn.textContent = 'Resume';
+      });
+  </script>
 
 </div>
 <div id="myModal" class="modal">
@@ -39,13 +78,15 @@
     <span class="close" onclick="closeModal()">&times;</span>
     <p id="modal-day"></p>
     <p id="modal-title"></p>
+    <p id="modal-time"></p>
     <a id="modal-link" href="https://github.com">event_dict</a>
 </div>
 </div>
-  
+
 <script>
-function openModal(day, title, link) {
+function openModal(day, title, time, link) {
     document.getElementById("modal-day").innerHTML = "날짜: " + day;
+    document.getElementById('modal-time').innerHTML=timer.innerHTML;
     document.getElementById("modal-title").innerHTML = "제목: " + title;
     document.getElementById("modal-link").href = link;
     document.getElementById("myModal").style.display = "block";
@@ -55,6 +96,6 @@ function closeModal() {
     document.getElementById("myModal").style.display = "none";
 }
 </script>
-  
+
 <a href="{% url 'event_create' %}">일정 추가</a>
 {% endblock %}

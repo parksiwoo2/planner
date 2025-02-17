@@ -1,20 +1,60 @@
-{% extends "plan/base.html" %}
+ {% extends "plan/base.html" %}
 
 {% block content %}
 <h2>{{ calendar }} {{ year }}</h2>
-<table border="10" style="table-layout: fixed; width: 500px; height:400px">
+<style>
+  h2 {
+  width: fit-content; 
+}
+  .holiday{color: red;}
+  .sat{color: blue}
+</style>
+<script>
+  function generateLink(day) {
+    if (day in event_dict) {
+      if (event_dict.get(day) && event_dict.get(day).id) {
+        return "{% url 'event_detail' event_dict.get.day.id %}";
+      } else {
+        return "{% url 'event_create' %}";
+      }
+    } else {
+      return "{% url 'event_create' %}";
+    }
+  }
+
+  function openModal(day) {
+    const link = generateLink(day); // 링크 생성
+    // ... (기존 모달 열기 코드)
+    document.getElementById("modal-link").href = link; // 모달 링크 설정
+    // ...
+  }
+</script>
+<table border="10" style="table-layout: fixed; width: 1000px; height:600px">
+    <thead>
+      <th>Monday</th>
+      <th>Tuesday</th>
+      <th>Wednesday</th>
+      <th>Thursday</th>
+      <th>Friday</th>
+      <th  class="sat">Saturday</th>
+      <th class="holiday">Sunday</th>
+    </thead>
     <tr>
       {% for day in month_days %}
         {% if forloop.counter0|divisibleby:7 %}
           </tr><tr>
         {% endif %}
-        <td onclick="openModal('{{ day }}')" style="text-align: left; vertical-align: top;">
+        <td onclick="openModal('{{ day }}', 'soo', 0, '{% url 'event_detail' event_dict.get.day.id %}')" style="text-align: left; vertical-align: top;">
           {% if day != 0 %}
-            {{ day }}
-            {% if day in event_dict %}
-            <a href="{% url 'event_detail' event_dict.day.id|default:3 %}">  {{ event_dict.day.title|default:"tlqkf" }}
-              </a>
-            {% endif %}
+              {% if day in event_dict %}
+                {% if event_dict.get.day and event_dict.get.day.id %}
+                    <a href="{% url 'event_detail' event_dict.get.day.id %}">{{ day }}</a>
+                  {% else %}
+                    <a href="{% url 'event_create' %}">{{ day }}</a>
+                  {% endif %}
+                {% else %}
+                  <a href="{% url 'event_create' %}">{{ day }}</a>
+              {% endif %}
           {% endif %}
         </td>
       {% endfor %}
@@ -24,10 +64,10 @@
   #timer {
     font-size: 2em;
     margin-bottom: 10px;
+    width: fit-content; 
   }
 </style>
-<div>
-
+<div style="width: fit-content">
   <div id="timer">00:00:00</div>
   <button id="startBtn">Start</button>
   <!-- <button id="stopBtn">Stop</button> -->
@@ -74,41 +114,40 @@
 
 </div>
 
-<div id="myModal" class="modal">
-<div class="modal-content">
-    <span class="close" onclick="closeModal()">&times;</span>
-    <p id="modal-day"></p>
-    <p id="modal-title"></p>
-    <p id="modal-time"></p>
-    <a id="modal-link" href="https://github.com">event_dict</a>
-</div>
+<div id="myModal" class="modal" style="width: fit-content; height: fit-content">
+  <div class="modal-content">
+      <span class="close" onclick="closeModal()">&times;</span>
+      <p id="modal-day"></p>
+      <p id="modal-title">siwoo</p>
+      <p id="modal-time"></p>
+      <a id="modal-link">event_dict</a>
+  </div>
 </div>
 
 
 <style>
-  #myModal .modal {
-    display: none; /* 초기에는 숨김 */
+  #myModal {
     position: fixed; /* 화면 전체에 고정 */
-    z-index: 1; /* 다른 요소 위에 표시 */
+    top: 15%;
     left: 75%;
-    top: 0%;
-    width: 25%;
-    height: 55%;
-    overflow: auto; /* 내용이 넘치면 스크롤 표시 */
-    background-color: rgba(224, 15, 15, 0.4); /* 배경색 */
+    width: 400%;
+    height: 200%;
+    background-color: rgba(12, 243, 205, 0.4); /* 배경색 */
+    display: none; /* 초기에는 숨김 */
+    z-index: 1; /* 다른 요소 위에 표시 */
   }
 
   #myModal .modal-content {
-    background-color: #6f0fee00;
+    background-color: #6d08f000;
     margin: 15% auto; /* 가운데 정렬 */
     padding: 20px;
     border: 5px solid #888;
-    width: 80%; /* 내용에 따라 너비 조절 */
+    width: 50%; /* 내용에 따라 너비 조절 */
     /* 추가 */
     position: relative; /* 모달 내용 위치 조절을 위해 추가 */
     top: 0%; /* 수직 가운데 정렬 */
-    left: 75%; /* 수평 가운데 정렬 */
-    transform: translate(-50%, -50%); /* 정확한 가운데 정렬 */
+    left: 0%; /* 수평 가운데 정렬 */
+    transform: translate(0%, 0%); /* 정확한 가운데 정렬 */
   }
 
   #myModal .close {

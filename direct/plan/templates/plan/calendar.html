@@ -11,22 +11,18 @@
 </style>
 <script>
   function generateLink(day) {
+    let url="k";
     if (day in event_dict) {
       if (event_dict.get(day) && event_dict.get(day).id) {
-        return "{% url 'event_detail' event_dict.get.day.id %}";
+        const Idd=event_dict.get(day).id;
+        url='/event_detail/${Idd}';
       } else {
-        return "{% url 'event_create' %}";
+        url='/event/new';
       }
     } else {
-      return "{% url 'event_create' %}";
+      url='/event/new/';
     }
-  }
-
-  function openModal(day) {
-    const link = generateLink(day); // 링크 생성
-    // ... (기존 모달 열기 코드)
-    document.getElementById("modal-link").href = link; // 모달 링크 설정
-    // ...
+    return url;
   }
 </script>
 <table border="10" style="table-layout: fixed; width: 1000px; height:600px">
@@ -44,7 +40,7 @@
         {% if forloop.counter0|divisibleby:7 %}
           </tr><tr>
         {% endif %}
-        <td onclick="openModal('{{ day }}', 'soo', 0, '{% url 'event_detail' event_dict.get.day.id %}')" style="text-align: left; vertical-align: top;">
+        <td onclick="openModal('{{ day }}', 'soo', 0, generateLink('{{ day }}'))" style="text-align: left; vertical-align: top;">
           {% if day != 0 %}
               {% if day in event_dict %}
                 {% if event_dict.get.day and event_dict.get.day.id %}

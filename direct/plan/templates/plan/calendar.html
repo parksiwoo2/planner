@@ -11,19 +11,32 @@
 </style>
 <script>
   function generateLink(day) {
-    let url="k";
-    if (day in event_dict) {
-      if (event_dict.get(day) && event_dict.get(day).id) {
-        const Idd=event_dict.get(day).id;
-        url='/event_detail/${Idd}';
-      } else {
-        url='/event/new';
+    let url = '/event/new/';
+    try {
+      const eventString = '{{ event_dict|safe }}';
+      let event = {}; // 기본값으로 빈 객체 설정
+
+      if (eventString.trim() !== "") { // 빈 문자열이 아닌 경우에만 파싱
+        event = JSON.parse(eventString);
       }
-    } else {
-      url='/event/new/';
+
+      if (day in event) {
+        if (event[day] && event[day].id) {
+          const Idd = event[day].id;
+          url = `/event_detail/${Idd}`;
+        } else {
+          url = '/event/new';
+        }
+      } else {
+        url = '/event/new/';
+      }
+    } catch (error) {
+      console.error("generateLink 오류:", error);
+      console.log('{{ event_dict|safe }}');
     }
     return url;
   }
+  document.getElementById("result").innerHTML = generateLink(4); 
 </script>
 <table border="10" style="table-layout: fixed; width: 1000px; height:600px">
     <thead>
@@ -31,7 +44,7 @@
       <th>Tuesday</th>
       <th>Wednesday</th>
       <th>Thursday</th>
-      <th>Friday</th>
+      <th id="result"></th>
       <th  class="sat">Saturday</th>
       <th class="holiday">Sunday</th>
     </thead>

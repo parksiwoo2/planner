@@ -11,9 +11,9 @@
 </style>
 <script>
   function generateLink(day) {
-    let url = '/event/new/';
+    let url = '/plan/event/new/';
     try {
-      const eventString = '{{ event_dict|safe }}';
+      const eventString = '{{ event|safe }}';
       let event = {}; // 기본값으로 빈 객체 설정
 
       if (eventString.trim() !== "") { // 빈 문자열이 아닌 경우에만 파싱
@@ -25,10 +25,10 @@
           const Idd = event[day].id;
           url = `/event_detail/${Idd}`;
         } else {
-          url = '/event/new';
+          url = '/plan/event/new';
         }
       } else {
-        url = '/event/new/';
+        url = '/plan/event/new/';
       }
     } catch (error) {
       console.error("generateLink 오류:", error);
@@ -55,9 +55,9 @@
         {% endif %}
         <td onclick="openModal('{{ day }}', 'soo', 0, generateLink('{{ day }}'))" style="text-align: left; vertical-align: top;">
           {% if day != 0 %}
-              {% if day in event_dict %}
-                {% if event_dict.get.day and event_dict.get.day.id %}
-                    <a href="{% url 'event_detail' event_dict.get.day.id %}">{{ day }}</a>
+              {% if day in event %}
+                {% if event.get.day and event.get.day.id %}
+                    <a href="{% url 'event_detail' event.get.day.id %}">{{ day }}</a>
                   {% else %}
                     <a href="{% url 'event_create' %}">{{ day }}</a>
                   {% endif %}

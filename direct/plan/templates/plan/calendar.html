@@ -13,7 +13,7 @@
   function generateLink(day) {
     let url = '/plan/event/new/';
     try {
-      const eventString = '{{ event|safe }}';
+      const eventString = '{{ event_dict|safe }}';
       let event = {}; // 기본값으로 빈 객체 설정
 
       if (eventString.trim() !== "") { // 빈 문자열이 아닌 경우에만 파싱
@@ -21,9 +21,9 @@
       }
 
       if (day in event) {
-        if (event[day] && event[day].id) {
-          const Idd = event[day].id;
-          url = `/event_detail/${Idd}`;
+        if (event[day] && event[day][2]) {
+          const Idd = event[day][2];
+          url = `/plan/event/${Idd}`;
         } else {
           url = '/plan/event/new';
         }
@@ -36,7 +36,9 @@
     }
     return url;
   }
-  document.getElementById("result").innerHTML = generateLink(4); 
+  function gl(day){
+    window.location.href=generateLink(day);
+  }
 </script>
 <table border="10" style="table-layout: fixed; width: 1000px; height:600px">
     <thead>
@@ -44,7 +46,7 @@
       <th>Tuesday</th>
       <th>Wednesday</th>
       <th>Thursday</th>
-      <th id="result"></th>
+      <th>Friday</th>
       <th  class="sat">Saturday</th>
       <th class="holiday">Sunday</th>
     </thead>
@@ -55,16 +57,8 @@
         {% endif %}
         <td onclick="openModal('{{ day }}', 'soo', 0, generateLink('{{ day }}'))" style="text-align: left; vertical-align: top;">
           {% if day != 0 %}
-              {% if day in event %}
-                {% if event.get.day and event.get.day.id %}
-                    <a href="{% url 'event_detail' event.get.day.id %}">{{ day }}</a>
-                  {% else %}
-                    <a href="{% url 'event_create' %}">{{ day }}</a>
-                  {% endif %}
-                {% else %}
-                  <a href="{% url 'event_create' %}">{{ day }}</a>
-              {% endif %}
-          {% endif %}
+            <a href="#" onclick="gl('{{ day }}')">{{ day }}</a>
+          {%endif%}
         </td>
       {% endfor %}
     </tr>
@@ -79,7 +73,6 @@
 <div style="width: fit-content">
   <div id="timer">00:00:00</div>
   <button id="startBtn">Start</button>
-  <!-- <button id="stopBtn">Stop</button> -->
   <script>
       const timer = document.getElementById('timer');
       const startBtn = document.getElementById('startBtn');
@@ -112,12 +105,6 @@
         startTime = Date.now() - elapsedTime;
         timerInterval = setInterval(updateTimer, 1000);
         startBtn.textContent = 'Pause';
-      });
-
-      stopBtn.addEventListener('click', () => {
-        clearInterval(timerInterval);
-        timerInterval = null;
-        startBtn.textContent = 'Resume';
       });
   </script>
 

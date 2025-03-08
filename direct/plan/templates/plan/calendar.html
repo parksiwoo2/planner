@@ -55,9 +55,9 @@
         {% if forloop.counter0|divisibleby:7 %}
           </tr><tr>
         {% endif %}
-        <td onclick="openModal('{{ day }}', 'soo', 0, generateLink('{{ day }}'))" style="text-align: left; vertical-align: top;">
+        <td {%if day == day1 %} style="overflow: hidden; text-align: left; vertical-align: top; border: 3px solid red;"{%else%}style="overflow: hidden; text-align: left; vertical-align: top;" {%endif%} {% if day != 0 %} onclick="openModal('{{ day }}', '', 0, generateLink('{{ day }}'))"{%endif%}>
           {% if day != 0 %}
-            <a href="#" onclick="gl('{{ day }}')">{{ day }}</a>
+            <a href="#" onclick="gl('{{ day }}')" {%if day == day1 %} style="color: green;font-size:20px;"{%endif%}>{{ day }}</a>
           {%endif%}
         </td>
       {% endfor %}
@@ -71,17 +71,16 @@
   }
 </style>
 <div style="width: fit-content">
-  <div id="timer">00:00:00</div>
+  <div id="timer"></div>
   <button id="startBtn">Start</button>
   <script>
       const timer = document.getElementById('timer');
       const startBtn = document.getElementById('startBtn');
-      const stopBtn = document.getElementById('stopBtn');
-
       let startTime = null;
       let elapsedTime = 0;
       let timerInterval = null;
-
+      let tome='00:00:00';
+      timer.textContent=tome;
       function updateTimer() {
         const currentTime = Date.now();
         elapsedTime = currentTime - startTime;
@@ -90,7 +89,8 @@
         const minutes = Math.floor((elapsedTime / (1000 * 60)) % 60);
         const hours = Math.floor((elapsedTime / (1000 * 60 * 60)) % 24);
 
-        timer.textContent = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        tome = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        timer.textContent=tome;
       }
 
       startBtn.addEventListener('click', () => {
@@ -114,7 +114,7 @@
   <div class="modal-content">
       <span class="close" onclick="closeModal()">&times;</span>
       <p id="modal-day"></p>
-      <p id="modal-title">siwoo</p>
+      <p id="modal-title"></p>
       <p id="modal-time"></p>
       <a id="modal-link">event_dict</a>
   </div>
@@ -162,9 +162,20 @@
 </style>
 <script>
 function openModal(day, title, time, link) {
+    const eventString = '{{ event_dict|safe }}';
+    let event = {}; // 기본값으로 빈 객체 설정
+
+    if (eventString.trim() !== "") { // 빈 문자열이 아닌 경우에만 파싱
+      event = JSON.parse(eventString);
+    }
     document.getElementById("modal-day").innerHTML = "날짜: " + day;
-    document.getElementById('modal-time').innerHTML=timer.innerHTML;
-    document.getElementById("modal-title").innerHTML = "제목: " + title;
+    document.getElementById('modal-time').innerHTML="공부시간: "+timer.innerHTML;
+    if (event[day] && event[day][0]){
+      document.getElementById("modal-title").innerHTML = "제목: " + event[day][0];
+    }
+    else{
+      document.getElementById("modal-title").innerHTML = "제목: "+title;
+    }
     document.getElementById("modal-link").href = link;
     document.getElementById("myModal").style.display = "block";
 }
